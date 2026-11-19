@@ -319,12 +319,18 @@ O objetivo real de um exercício como este é aprender a **defender**. Abaixo, a
 
 ## 💭 Reflexões e aprendizados
 
-> *Preencha com suas impressões pessoais. Algumas perguntas para guiar:*
+**O que mais me surpreendeu sobre a velocidade/facilidade de um ataque de dicionário?**
+O tempo. O FTP do Metasploitable caiu em segundos, com uma wordlist pequena, justamente porque usava uma credencial padrão (`msfadmin/msfadmin`) que nunca foi trocada. Ficou claro que o gargalo da segurança raramente é a sofisticação do atacante — é a senha fraca ou padrão que ninguém se preocupou em mudar.
 
-- O que mais te surpreendeu sobre a velocidade/facilidade de um ataque de dicionário?
-- Qual cenário foi mais difícil de automatizar e por quê (ex.: o CSRF da DVWA)?
-- Como a diferença entre **força bruta** e **password spraying** muda a estratégia de defesa?
-- Depois deste laboratório, quais medidas você aplicaria primeiro em um sistema real?
+**Qual cenário foi mais difícil de automatizar e por quê?**
+O formulário web da DVWA, sem dúvida. Enquanto FTP e SMB autenticam em uma troca direta, o login web depende de **cookie de sessão** (`PHPSESSID`) e, em níveis maiores, de **token anti-CSRF**. Isso exigiu capturar o `PHPSESSID` no DevTools e trocar de ferramenta — do Medusa para o Hydra (`http-get-form`), que lida melhor com cookies e cabeçalhos. A maior lição foi perceber que entender *por que* o ataque é difícil ensina mais sobre defesa do que o ataque que dá certo de primeira.
+
+**Como a diferença entre força bruta e password spraying muda a estratégia de defesa?**
+Muda bastante. A força bruta tradicional (muitas senhas contra um usuário) é facilmente barrada por **bloqueio de conta** após X tentativas. Já o password spraying inverte a lógica (uma senha comum contra muitos usuários) exatamente para *driblar* esse bloqueio — cada conta recebe só uma ou duas tentativas. Por isso, defender-se de spraying exige menos "trava por conta" e mais **detecção comportamental**: correlacionar tentativas pelo mesmo IP, monitorar picos de falhas distribuídas e, acima de tudo, exigir **MFA**.
+
+**Depois deste laboratório, quais medidas eu aplicaria primeiro em um sistema real?**
+Na ordem: (1) **MFA** em tudo que for exposto, pois quebra o ataque mesmo com a senha correta; (2) **eliminar senhas padrão e serviços legados** (como o FTP/SMBv1 sem criptografia); (3) **bloqueio de conta + rate limiting**; e (4) **monitoramento de logs** com alertas para picos de falha de autenticação. São medidas baratas que, juntas, tornam o alvo caro demais para o atacante.
+
 
 ---
 

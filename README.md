@@ -145,7 +145,7 @@ Isso confirma que FTP (21), SMB (139/445) e HTTP (80) estão ativos.
 
 Para um laboratório, listas pequenas já demonstram o conceito.
 
-**`wordlists/usuarios.txt`**
+**`usuarios.txt`**
 ```
 admin
 root
@@ -155,7 +155,7 @@ service
 guest
 ```
 
-**`wordlists/senhas.txt`**
+**`senhas.txt`**
 ```
 123456
 password

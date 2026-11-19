@@ -46,27 +46,6 @@ Um ataque de **força bruta** tenta adivinhar credenciais testando sistematicame
 | **Password spraying** | Testa **uma** senha comum contra **muitos** usuários | Evita o bloqueio de conta por tentativas |
 | **Credential stuffing** | Reutiliza pares usuário/senha vazados de outros sites | Usuários que repetem senhas |
 
-O **Medusa** é um *brute-forcer* paralelo, modular e rápido, incluído no Kali Linux. Ele suporta diversos protocolos via módulos (`ftp`, `ssh`, `smbnt`, `http`, `web-form`, etc.).
-
-Para listar os módulos disponíveis:
-
-```bash
-medusa -d
-```
-
-Principais parâmetros:
-
-| Parâmetro | Função |
-|---|---|
-| `-h` / `-H` | Host alvo / arquivo com lista de hosts |
-| `-u` / `-U` | Usuário único / arquivo com lista de usuários |
-| `-p` / `-P` | Senha única / arquivo com lista de senhas (wordlist) |
-| `-M` | Módulo (serviço) a ser atacado |
-| `-m` | Parâmetros específicos do módulo |
-| `-t` | Número de *threads* (tentativas simultâneas) |
-| `-f` / `-F` | Para após a primeira credencial válida (no host / global) |
-| `-n` | Porta customizada |
-| `-v` | Nível de verbosidade |
 
 ---
 
@@ -173,7 +152,7 @@ ls -lh /usr/share/wordlists/rockyou.txt
 
 ---
 
-## 🎯 Cenário 1 — Força bruta em FTP
+## 🎯 Cenário 1 — Força bruta em FTP - Medusa
 
 O Metasploitable 2 roda o **vsftpd** na porta 21.
 
@@ -203,7 +182,7 @@ ftp 192.168.1.114
 
 ---
 
-## 🌐 Cenário 2 — Formulário web (DVWA)
+## 🌐 Cenário 2 — Formulário web (DVWA) - Hydra
 
 A DVWA (Damn Vulnerable Web Application) possui uma página de login ideal para testar ataques a formulários.
 

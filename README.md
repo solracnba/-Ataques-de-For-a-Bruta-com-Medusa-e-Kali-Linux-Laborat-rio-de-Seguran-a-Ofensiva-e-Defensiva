@@ -193,10 +193,9 @@ medusa -h 192.168.1.114 -U usuarios.txt -P senhas.txt -M ftp -t 6 -f
 - `-F` para ao encontrar a primeira credencial válida
 
 **Saída esperada (exemplo):**
-```
-<img width="787" height="558" alt="image" src="https://github.com/user-attachments/assets/f8eb5b15-aba1-4f68-8567-3f6191de0c98" />
 
-```
+<img width="791" height="571" alt="medusa-saida-ftp" src="https://github.com/user-attachments/assets/18908769-5c77-481f-ba22-1a67ef8c179c" />
+
 
 ### Validação do acesso
 ```bash

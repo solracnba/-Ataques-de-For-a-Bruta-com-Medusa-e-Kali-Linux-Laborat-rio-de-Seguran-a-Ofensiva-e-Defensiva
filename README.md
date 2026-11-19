@@ -115,7 +115,6 @@ ping -c 4 192.168.1.114
 <img width="729" height="618" alt="01-configuracao-rede" src="https://github.com/user-attachments/assets/20028553-4d91-4a8f-a7d1-1b674817da38" />
 
 
-
 ---
 
 ## 🔍 Reconhecimento com Nmap
@@ -136,7 +135,6 @@ nmap -p 139,445 --script smb-os-discovery,smb-enum-shares,smb-enum-users 192.168
 Isso confirma que FTP (21), SMB (139/445) e HTTP (80) estão ativos.
 
 <img width="728" height="647" alt="02 - namap - scan" src="https://github.com/user-attachments/assets/86aa98dd-6aca-4b8b-973c-6f1f6beff31a" />
-
 
 
 ---
@@ -203,7 +201,8 @@ ftp 192.168.56.20
 # informe o usuário/senha encontrados
 ```
 
-📸 *`/images/03-medusa-ftp.png`*
+<img width="724" height="280" alt="04 - frp - login - successful" src="https://github.com/user-attachments/assets/7abe6816-8c7d-498e-b5e8-82e70232f044" />
+
 
 ---
 

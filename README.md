@@ -339,11 +339,11 @@ O objetivo real de um exercício como este é aprender a **defender**. Abaixo, a
 ```
 .
 ├── README.md
-├── wordlists/
+├── Wordlists/
 │   ├── usuarios.txt
 │   ├── senhas.txt
 │   └── usuarios_smb.txt
-└── images/
+└── Imagens/
     ├── 01-configuracao-rede.png
     ├── 02-nmap-scan.png
     ├── 03-medusa-ftp.png

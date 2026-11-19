@@ -1,4 +1,4 @@
-# 🛡️ Ataques de Força Bruta com Medusa e Kali Linux — Laboratório de Segurança Ofensiva e Defensiva
+# 🛡️ Ataques de Força Bruta com Medusa, Hydra e Kali Linux — Laboratório de Segurança Ofensiva e Defensiva
 
 Projeto prático do desafio da **DIO** sobre auditoria de senhas em ambiente controlado. Aqui eu simulo ataques de força bruta contra serviços **FTP**, **formulário web (DVWA)** e **SMB (password spraying)**, documento cada etapa e — o mais importante — proponho **medidas de mitigação** para cada cenário.
 
@@ -77,9 +77,10 @@ Principais parâmetros:
 │       Kali Linux        │                                        │       Metasploitable 2       │
 │   (Atacante / Auditor)  │ <───────────────────────────────────>  │   (Alvo vulnerável)          │
 │   192.168.1.101         │                                        │   192.168.56.1.114           │
-│   - Medusa              │                                        │   - FTP (vsftpd)  :21        │
-│   - Nmap                │                                        │   - SMB (Samba)   :139/445   │
-│   - enum4linux          │                                        │   - DVWA (Apache) :80        │
+│   - Medusa              |                                        |   - FTP (vsftpd)  :21        |
+|   - Hydra               |                                        │   - SMB (Samba)   :139/445   │
+│   - Nmap                │                                        │   - DVWA (Apache) :80        │
+│   - enum4linux          │                                        │                              │
 └─────────────────────────┘                                        └──────────────────────────────┘
 ```
 

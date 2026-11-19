@@ -135,7 +135,9 @@ nmap -p 139,445 --script smb-os-discovery,smb-enum-shares,smb-enum-users 192.168
 
 Isso confirma que FTP (21), SMB (139/445) e HTTP (80) estão ativos.
 
-📸 *`/images/02-nmap-scan.png`*
+<img width="728" height="647" alt="02 - namap - scan" src="https://github.com/user-attachments/assets/86aa98dd-6aca-4b8b-973c-6f1f6beff31a" />
+
+📸 *`02-nmap-scan.png`*
 
 ---
 

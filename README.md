@@ -193,7 +193,7 @@ medusa -h 192.168.1.114 -U usuarios.txt -P senhas.txt -M ftp -t 6 -f
 
 ### Validação do acesso
 ```bash
-ftp 192.168.56.20
+ftp 192.168.1.114
 # informe o usuário/senha encontrados
 ```
 

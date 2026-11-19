@@ -74,19 +74,16 @@ Principais parâmetros:
 ## 🏗️ Arquitetura do laboratório
 
 ```
-┌─────────────────────────┐        Rede Interna / Host-Only        ┌──────────────────────────────┐
-│       Kali Linux         │        (ex.: 192.168.56.0/24)          │       Metasploitable 2        │
-│   (Atacante / Auditor)   │ <───────────────────────────────────> │   (Alvo vulnerável)           │
-│   192.168.56.10          │                                        │   192.168.56.20               │
-│   - Medusa               │                                        │   - FTP (vsftpd)  :21         │
-│   - Nmap                 │                                        │   - SMB (Samba)   :139/445    │
-│   - enum4linux           │                                        │   - DVWA (Apache) :80         │
+┌─────────────────────────┐        Rede Interna / Bridge           ┌──────────────────────────────┐
+│       Kali Linux        │                                        │       Metasploitable 2       │
+│   (Atacante / Auditor)  │ <───────────────────────────────────>  │   (Alvo vulnerável)          │
+│   192.168.1.101         │                                        │   192.168.56.1.114           │
+│   - Medusa              │                                        │   - FTP (vsftpd)  :21        │
+│   - Nmap                │                                        │   - SMB (Samba)   :139/445   │
+│   - enum4linux          │                                        │   - DVWA (Apache) :80        │
 └─────────────────────────┘                                        └──────────────────────────────┘
 ```
 
-> 💡 Substitua os IPs pelos endereços reais do seu laboratório.
-
----
 
 ## ⚙️ Configuração do ambiente
 
@@ -100,9 +97,8 @@ Principais parâmetros:
 Para garantir que nada "vaze" para fora do laboratório:
 
 1. Em cada VM: **Configurações → Rede**
-2. Escolha **Rede Interna** (ou **Host-Only Adapter**)
-3. Use o **mesmo nome de rede** nas duas VMs (ex.: `lab-seguranca`)
-4. Garanta que **não há adaptador NAT/Bridge ativo** durante os testes
+2. Escolha **Rede Interna** (ou **Modo Bridge **)
+
 
 ### 3. Descobrindo os IPs
 ```bash

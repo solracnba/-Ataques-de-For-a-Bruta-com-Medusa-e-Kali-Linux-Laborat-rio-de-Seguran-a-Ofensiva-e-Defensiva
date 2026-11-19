@@ -184,7 +184,7 @@ medusa -h 192.168.1.114 -U usuarios.txt -P senhas.txt -M ftp -t 6 -f
 - `-P` lista de senhas
 - `-M ftp` módulo FTP
 - `-t 6` seis tentativas simultâneas
-- `-F` para ao encontrar a primeira credencial válida
+- `-f` para ao encontrar a primeira credencial válida
 
 **Saída esperada (exemplo):**
 

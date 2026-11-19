@@ -207,48 +207,51 @@ ftp 192.168.1.114
 
 A DVWA (Damn Vulnerable Web Application) possui uma página de login ideal para testar ataques a formulários.
 
-Preparação
-Acesse a DVWA pelo navegador: http://192.168.56.20/dvwa
-Faça login inicial (admin / password)
-Em DVWA Security, defina o nível como Low para o exercício
-Vá até o módulo Brute Force
+### Preparação
+1. Acesse a DVWA pelo navegador: `http://192.168.56.20/dvwa`
+2. Faça login inicial (`admin` / `password`)
+3. Em **DVWA Security**, defina o nível como **Low** para o exercício
+4. Vá até o módulo **Brute Force**
 
-💡 Por que Hydra neste cenário? A DVWA usa cookie de sessão (PHPSESSID) e, em certos níveis, um token anti-CSRF (user_token) por requisição. O Hydra lida de forma mais direta com cookies e cabeçalhos HTTP, o que o torna a escolha mais prática para ataques a formulários web (o Medusa continua usado nos cenários de FTP e SMB).
+> 💡 **Por que Hydra neste cenário?** A DVWA usa **cookie de sessão** (`PHPSESSID`) e, em certos níveis, um **token anti-CSRF** (`user_token`) por requisição. O Hydra lida de forma mais direta com cookies e cabeçalhos HTTP, o que o torna a escolha mais prática para ataques a formulários web (o Medusa continua usado nos cenários de FTP e SMB).
 
-Captura dos parâmetros
+### Captura dos parâmetros
+Use o **DevTools (F12) → aba Network** para inspecionar a requisição de login e identificar:
+- O método (GET/POST) e a URL do formulário
+- Os campos enviados (`username`, `password`, `Login`)
+- A **mensagem de erro** exibida em falha (ex.: *"Username and/or password incorrect."*)
+- O **cookie de sessão** (`PHPSESSID`) e o nível de segurança (`security=low`)
 
-Use o DevTools (F12) → aba Network para inspecionar a requisição de login e identificar:
-
-O método (GET/POST) e a URL do formulário
-Os campos enviados (username, password, Login)
-A mensagem de erro exibida em falha (ex.: "Username and/or password incorrect.")
-O cookie de sessão (PHPSESSID) e o nível de segurança (security=low)
-Ataque com Hydra (módulo http-get-form)
-bash
+### Ataque com Hydra (módulo `http-get-form`)
+```bash
 hydra 192.168.56.20 http-get-form \
   "/dvwa/vulnerabilities/brute/:username=^USER^&password=^PASS^&Login=Login:incorrect:H=Cookie: PHPSESSID=SEU_SESSID; security=low" \
   -l admin -P wordlists/senhas.txt
+```
 
-Entendendo a sintaxe do módulo (separada por :):
+Entendendo a sintaxe do módulo (separada por `:`):
 
-Parte	Significado
-/dvwa/vulnerabilities/brute/	Caminho da página de login
-username=^USER^&password=^PASS^&Login=Login	Parâmetros do formulário; ^USER^ e ^PASS^ são substituídos pelas listas
-incorrect	Texto que indica falha (se aparecer, a senha está errada)
-H=Cookie: PHPSESSID=...; security=low	Cabeçalho com o cookie de sessão válido e o nível de segurança
+| Parte | Significado |
+|---|---|
+| `/dvwa/vulnerabilities/brute/` | Caminho da página de login |
+| `username=^USER^&password=^PASS^&Login=Login` | Parâmetros do formulário; `^USER^` e `^PASS^` são substituídos pelas listas |
+| `incorrect` | Texto que indica **falha** (se aparecer, a senha está errada) |
+| `H=Cookie: PHPSESSID=...; security=low` | Cabeçalho com o cookie de sessão válido e o nível de segurança |
 
 Demais parâmetros:
+- `-l admin` usuário único (use `-L usuarios.txt` para uma lista)
+- `-P wordlists/senhas.txt` lista de senhas
 
--l admin usuário único (use -L usuarios.txt para uma lista)
--P wordlists/senhas.txt lista de senhas
+> ℹ️ Pegue o valor real do `PHPSESSID` no DevTools após fazer login na DVWA e substitua `SEU_SESSID`. Se o formulário usar **POST**, troque o módulo por `http-post-form` mantendo a mesma estrutura.
 
-ℹ️ Pegue o valor real do PHPSESSID no DevTools após fazer login na DVWA e substitua SEU_SESSID. Se o formulário usar POST, troque o módulo por http-post-form mantendo a mesma estrutura.
-
-Saída esperada (exemplo):
-
+**Saída esperada (exemplo):**
+```
 [80][http-get-form] host: 192.168.56.20   login: admin   password: password
+```
 
-📸 /images/04-dvwa-hydra.png
+📸 *`/images/04-dvwa-hydra.png`*
+
+---
 
 ---
 

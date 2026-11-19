@@ -192,7 +192,20 @@ A DVWA (Damn Vulnerable Web Application) possui uma página de login ideal para 
 3. Em **DVWA Security**, defina o nível como **Low** para o exercício
 4. Vá até o módulo **Brute Force**
 
-> 💡 **Por que Hydra neste cenário?** A DVWA usa **cookie de sessão** (`PHPSESSID`) e, em certos níveis, um **token anti-CSRF** (`user_token`) por requisição. O Hydra lida de forma mais direta com cookies e cabeçalhos HTTP, o que o torna a escolha mais prática para ataques a formulários web (o Medusa continua usado nos cenários de FTP e SMB).
+### Por que trocar o Medusa pelo Hydra neste cenário?
+
+Nos cenários de **FTP** e **SMB**, o Medusa funciona muito bem: são protocolos "diretos", em que a autenticação acontece em uma única troca de mensagens. Já um **formulário web** é diferente — e foi aí que o Medusa mostrou suas limitações para este caso:
+
+| Desafio do formulário DVWA | Por que o Medusa complica | Como o Hydra resolve |
+|---|---|---|
+| **Cookie de sessão (`PHPSESSID`)** | O módulo `web-form` do Medusa tem suporte limitado e pouco documentado para injetar cookies | O Hydra permite passar cabeçalhos HTTP arbitrários com `H=Cookie: ...` de forma simples |
+| **Nível de segurança por cookie (`security=low`)** | Difícil de enviar junto da requisição no Medusa | Enviado no mesmo cabeçalho `H=Cookie:` |
+| **Detecção de falha/sucesso** | A sintaxe de `DENY-SIGNAL` do Medusa é mais engessada | O Hydra usa a *string* de falha (`:incorrect:`) de forma clara e flexível |
+| **Documentação e exemplos** | Poucos exemplos práticos do `web-form` do Medusa | Grande volume de material sobre `http-get-form`/`http-post-form` do Hydra |
+
+**Resumindo:** o Hydra tem um módulo HTTP mais maduro e flexível para formulários, lidando melhor com **cookies, cabeçalhos e sessões** — exatamente o que um login web moderno exige. Por isso ele é a ferramenta certa aqui, enquanto o Medusa segue sendo a escolha nos cenários de FTP e SMB.
+
+> 💡 Lição de aprendizado: não existe "ferramenta melhor", existe a **ferramenta certa para cada protocolo**. Saber escolher é parte do trabalho de auditoria.
 
 ### Captura dos parâmetros
 Use o **DevTools (F12) → aba Network** para inspecionar a requisição de login e identificar:

@@ -123,18 +123,14 @@ Antes de atacar, identifique os serviços e portas abertas do alvo:
 
 ```bash
 # Varredura de serviços e versões
-nmap -sV 192.168.1.114
+nmap -sV -p 21,22,80,445,139, 192.168.1.114
 
-# Varredura completa com scripts padrão
-nmap -sC -sV -p- 192.168.1.114
 
-# Enumeração específica de SMB
-nmap -p 139,445 --script smb-os-discovery,smb-enum-shares,smb-enum-users 192.168.1.114
 ```
 
 Isso confirma que FTP (21), SMB (139/445) e HTTP (80) estão ativos.
 
-<img width="728" height="647" alt="02 - namap - scan" src="https://github.com/user-attachments/assets/86aa98dd-6aca-4b8b-973c-6f1f6beff31a" />
+<img width="724" height="399" alt="02 - nmap - scan" src="https://github.com/user-attachments/assets/96ca123c-1c77-4466-8b70-17648a79481a" />
 
 
 ---

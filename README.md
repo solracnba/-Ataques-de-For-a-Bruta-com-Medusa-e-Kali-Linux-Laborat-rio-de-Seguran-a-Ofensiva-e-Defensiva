@@ -343,8 +343,6 @@ O objetivo real de um exercício como este é aprender a **defender**. Abaixo, a
 │   ├── usuarios.txt
 │   ├── senhas.txt
 │   └── usuarios_smb.txt
-├── scripts/
-│   └── (scripts auxiliares, se houver)
 └── images/
     ├── 01-configuracao-rede.png
     ├── 02-nmap-scan.png

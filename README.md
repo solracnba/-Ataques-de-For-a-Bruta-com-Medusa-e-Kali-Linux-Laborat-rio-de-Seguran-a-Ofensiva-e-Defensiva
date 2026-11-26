@@ -28,7 +28,7 @@ Projeto prático do desafio da **DIO** sobre auditoria de senhas em ambiente con
 ## 🎯 Objetivos de aprendizagem
 
 - Compreender ataques de força bruta em diferentes serviços (FTP, Web, SMB);
-- Utilizar o **Kali Linux** e o **Medusa** para auditoria de senhas em ambiente controlado;
+- Utilizar o **Kali Linux** com **Medusa** e **Hydra** para auditoria de senhas em ambiente controlado;
 - Documentar processos técnicos de forma clara e reproduzível;
 - Reconhecer vulnerabilidades comuns e propor **medidas de mitigação**;
 - Utilizar o GitHub como portfólio técnico.
@@ -52,15 +52,15 @@ Um ataque de **força bruta** tenta adivinhar credenciais testando sistematicame
 ## 🏗️ Arquitetura do laboratório
 
 ```
-┌─────────────────────────┐        Rede Interna / Bridge           ┌──────────────────────────────┐
-│       Kali Linux        │                                        │       Metasploitable 2       │
-│   (Atacante / Auditor)  │ <───────────────────────────────────>  │   (Alvo vulnerável)          │
-│   192.168.1.101         │                                        │   192.168.56.1.114           │
-│   - Medusa              |                                        |   - FTP (vsftpd)  :21        |
-|   - Hydra               |                                        │   - SMB (Samba)   :139/445   │
-│   - Nmap                │                                        │   - DVWA (Apache) :80        │
-│   - enum4linux          │                                        │                              │
-└─────────────────────────┘                                        └──────────────────────────────┘
+┌─────────────────────────┐    Rede Interna / Host-Only (isolada)   ┌──────────────────────────────┐
+│       Kali Linux        │                                         │       Metasploitable 2       │
+│   (Atacante / Auditor)  │ <─────────────────────────────────────> │   (Alvo vulnerável)          │
+│   192.168.1.101         │                                         │   192.168.1.114              │
+│   - Medusa              │                                         │   - FTP (vsftpd)  :21        │
+│   - Hydra               │                                         │   - SMB (Samba)   :139/445   │
+│   - Nmap                │                                         │   - DVWA (Apache) :80        │
+│   - enum4linux          │                                         │                              │
+└─────────────────────────┘                                         └──────────────────────────────┘
 ```
 
 
@@ -76,7 +76,11 @@ Um ataque de **força bruta** tenta adivinhar credenciais testando sistematicame
 Para garantir que nada "vaze" para fora do laboratório:
 
 1. Em cada VM: **Configurações → Rede**
-2. Escolha **Rede Interna** (ou **Modo Bridge **)
+2. Escolha **Rede Interna** (ou **Host-Only Adapter**)
+3. Use o **mesmo nome de rede** nas duas VMs (ex.: `lab-seguranca`)
+4. Garanta que **não há adaptador NAT/Bridge ativo** durante os testes
+
+> ⚠️ **Por que não usar o modo Bridge?** No modo Bridge as VMs entram na sua rede doméstica real, expondo o Metasploitable 2 (uma máquina propositalmente vulnerável) a todos os dispositivos da rede. Para um laboratório, **Rede Interna** ou **Host-Only** mantêm tudo isolado.
 
 
 ### 3. Descobrindo os IPs
@@ -103,7 +107,7 @@ Antes de atacar, identifique os serviços e portas abertas do alvo:
 
 ```bash
 # Varredura de serviços e versões
-nmap -sV -p 21,22,80,445,139, 192.168.1.114
+nmap -sV -p 21,22,80,139,445 192.168.1.114
 
 
 ```
@@ -209,10 +213,11 @@ Nos cenários de **FTP** e **SMB**, o Medusa funciona muito bem: são protocolos
 
 ### Captura dos parâmetros
 Use o **DevTools (F12) → aba Network** para inspecionar a requisição de login e identificar:
-- O método (GET/POST) e a URL do formulário
+- O método (**POST**) e a URL do formulário (`/dvwa/login.php`)
 - Os campos enviados (`username`, `password`, `Login`)
-- A **mensagem de erro** exibida em falha (ex.: *"Username and/or password incorrect."*)
-- O **cookie de sessão** (`PHPSESSID`) e o nível de segurança (`security=low`)
+- A **mensagem de erro** exibida em falha (`Login failed`)
+
+> ℹ️ Como o ataque mira a **própria página de login** (`login.php`), não é preciso injetar um cookie de sessão válido nem o `security=low` — eles só seriam necessários para atacar o módulo interno `/dvwa/vulnerabilities/brute/`, que exige já estar autenticado.
 
 ### Ataque com Hydra (módulo `http-post-form`)
 ```bash
@@ -231,7 +236,7 @@ Entendendo a sintaxe do módulo (separada por `:`):
 
 
 Demais parâmetros:
-- `-L usuarios.txt` lista de usuarios)
+- `-L usuarios.txt` lista de usuários
 - `-P senhas.txt` lista de senhas
 
 
@@ -243,8 +248,6 @@ Demais parâmetros:
 
 <img width="1606" height="400" alt="05 -dvwa-hydra" src="https://github.com/user-attachments/assets/047737b0-2e3a-4066-9578-7effae3cc112" />
 
-
----
 
 ---
 
@@ -261,21 +264,24 @@ enum4linux -U 192.168.1.114
 nmap -p 445 --script smb-enum-users 192.168.1.114
 ```
 Salve os usuários encontrados em `usuarios_smb.txt`.
-Crie uma lista de senhas em `senhas_spray.txt`.
 
 ### Etapa 2 — O spraying com Medusa
+No *spraying* testamos **uma única senha comum** contra todos os usuários enumerados:
+
 ```bash
- medusa -h 192.168.1.114 \
-       -U usuarios_smb.txt \ 
-       -p senhas_spray.txt \
+medusa -h 192.168.1.114 \
+       -U usuarios_smb.txt \
+       -p 'msfadmin' \
        -M smbnt \
        -t 1
 ```
 
 - `-U` lista de usuários enumerados
-- `-P` lista de senhas
+- `-p 'msfadmin'` **uma única** senha (característica do spraying)
 - `-M smbnt` módulo SMB
 - `-t 1` baixa concorrência para simular um ataque "silencioso"
+
+> 💡 Note o `-p` **minúsculo**: ele recebe uma senha literal. Para testar *várias* senhas de um arquivo usaríamos `-P arquivo.txt` (maiúsculo) — mas aí seria força bruta, não spraying.
 
 <img width="1399" height="659" alt="06 - medusa-saida-smb" src="https://github.com/user-attachments/assets/622ed02a-be80-4d90-8c79-8f83c8bf8b8e" />
 
@@ -328,7 +334,7 @@ O objetivo real de um exercício como este é aprender a **defender**. Abaixo, a
 O tempo. O FTP do Metasploitable caiu em segundos, com uma wordlist pequena, justamente porque usava uma credencial padrão (`msfadmin/msfadmin`) que nunca foi trocada. Ficou claro que o gargalo da segurança raramente é a sofisticação do atacante — é a senha fraca ou padrão que ninguém se preocupou em mudar.
 
 **Qual cenário foi mais difícil de automatizar e por quê?**
-O formulário web da DVWA, sem dúvida. Enquanto FTP e SMB autenticam em uma troca direta, o login web depende de **cookie de sessão** (`PHPSESSID`) e, em níveis maiores, de **token anti-CSRF**. Isso exigiu capturar o `PHPSESSID` no DevTools e trocar de ferramenta — do Medusa para o Hydra (`http-get-form`), que lida melhor com cookies e cabeçalhos. A maior lição foi perceber que entender *por que* o ataque é difícil ensina mais sobre defesa do que o ataque que dá certo de primeira.
+O formulário web da DVWA, sem dúvida. Enquanto FTP e SMB autenticam em uma troca direta, o login web envolve **sessão** (`PHPSESSID`) e, no módulo interno, **token anti-CSRF** — complexidades que me fizeram entender melhor o protocolo e trocar de ferramenta, do Medusa para o Hydra (`http-post-form`), que lida melhor com formulários, cookies e cabeçalhos. A maior lição foi perceber que entender *por que* o ataque é difícil ensina mais sobre defesa do que o ataque que dá certo de primeira.
 
 **Como a diferença entre força bruta e password spraying muda a estratégia de defesa?**
 Muda bastante. A força bruta tradicional (muitas senhas contra um usuário) é facilmente barrada por **bloqueio de conta** após X tentativas. Já o password spraying inverte a lógica (uma senha comum contra muitos usuários) exatamente para *driblar* esse bloqueio — cada conta recebe só uma ou duas tentativas. Por isso, defender-se de spraying exige menos "trava por conta" e mais **detecção comportamental**: correlacionar tentativas pelo mesmo IP, monitorar picos de falhas distribuídas e, acima de tudo, exigir **MFA**.

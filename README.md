@@ -277,7 +277,7 @@ Crie uma lista de senhas em `senhas_spray.txt`.
 - `-M smbnt` módulo SMB
 - `-t 1` baixa concorrência para simular um ataque "silencioso"
 
-<img width="1405" height="654" alt="06 - medusa-saida-smb" src="https://github.com/user-attachments/assets/aeec1b4d-42e4-4e1e-a766-f82168e8c11d" />
+<img width="1399" height="659" alt="06 - medusa-saida-smb" src="https://github.com/user-attachments/assets/622ed02a-be80-4d90-8c79-8f83c8bf8b8e" />
 
 
 ### Validação do acesso

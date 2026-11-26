@@ -282,10 +282,11 @@ Crie uma lista de senhas em `senhas_spray.txt`.
 
 ### Validação do acesso
 ```bash
-smbclient -L //192.168.56.20 -U msfadmin
+smbclient -L //192.168.1.114 -U msfadmin
 ```
 
-📸 *`/images/05-smb-spraying.png`*
+<img width="1397" height="478" alt="07 - smbclient" src="https://github.com/user-attachments/assets/9aeb9b91-c1fd-4b26-8dc4-738a83e60d6b" />
+
 
 ---
 
